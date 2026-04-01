@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id    String @id @default(cuid())
+  name  String
+  color String
+  tasks Task[]
+}
+
+model Task {
+  id         String   @id @default(cuid())
+  title      String
+  startTime  String
+  duration   Int      @default(60)
+  isDone     Boolean  @default(false)
+  isBreak    Boolean  @default(false)
+  targetDate String   // Format: YYYY-MM-DD
+  
+  companyId  String?
+  company    Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
