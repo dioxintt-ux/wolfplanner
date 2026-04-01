@@ -40,7 +40,6 @@ export default function Home() {
   const [showTimePicker, setShowTimePicker] = useState<{ type: 'new' | 'edit' | 'break', current: string } | null>(null);
   const [bitrixTasks, setBitrixTasks] = useState<any[]>([]);
   const [linionTasks, setLinionTasks] = useState<any[]>([]);
-  const [asanaTasks, setAsanaTasks] = useState<any[]>([]);
   const [expandedPartnerId, setExpandedPartnerId] = useState<string | null>(null);
 
   const [editTitle, setEditTitle] = useState('');
@@ -80,10 +79,6 @@ export default function Home() {
       if (!data.error) setLinionTasks(data.tasks || []);
     });
 
-    // Fetch Asana
-    fetch(`/api/asana/tasks`).then(res => res.json()).then(data => {
-      if (!data.error) setAsanaTasks(data.tasks || []);
-    });
   };
 
   useEffect(() => {
@@ -125,7 +120,7 @@ export default function Home() {
     }
   };
 
-  const handleTaskDrop = async (taskId: string, newHour: number, isExternal = false, externalTitle?: string, externalSource?: 'vicekeeper' | 'linion' | 'asana') => {
+  const handleTaskDrop = async (taskId: string, newHour: number, isExternal = false, externalTitle?: string, externalSource?: 'vicekeeper' | 'linion') => {
     if (isExternal && externalTitle) {
       const newTime = `${newHour.toString().padStart(2, '0')}:00`;
       let targetId = selectedCompanyId;
@@ -353,18 +348,6 @@ export default function Home() {
             </div>
           </section>
           
-          <section className="side-card apple-glass-ultra" style={{ marginTop: '2rem', padding: '2rem' }}>
-            <h3 className="section-tab-label" style={{ marginBottom: '1rem' }}>ASANA WEEKLY</h3>
-            <div className="bitrix-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '200px', overflowY: 'auto', paddingRight: '5px' }}>
-              {asanaTasks.length === 0 && <p style={{ opacity: 0.2, fontSize: '0.6rem', padding: '10px' }}>No weekly missions.</p>}
-              {asanaTasks.map(at => (
-                <div key={at.gid} draggable onDragStart={e => { e.dataTransfer.setData('externalTitle', at.name); e.dataTransfer.setData('externalSource', 'asana'); e.dataTransfer.setData('isExternal', 'true'); }} className="bitrix-node-mini" style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', marginBottom: '5px', cursor: 'grab', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <h5 style={{ fontSize: '0.7rem', fontWeight: 700, opacity: 0.9 }}>{at.name}</h5>
-                  <p style={{ fontSize: '0.5rem', opacity: 0.4 }}>{at.due_on ? new Date(at.due_on).toLocaleDateString() : 'NO DEADLINE'}</p>
-                </div>
-              ))}
-            </div>
-          </section>
 
           <section className="side-card apple-glass-ultra" style={{ marginTop: '2rem', padding: '2rem' }}>
             <h3 className="section-tab-label" style={{ marginBottom: '1rem' }}>DEPLOY OBJECTIVE</h3>
